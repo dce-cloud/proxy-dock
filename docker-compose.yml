@@ -1,0 +1,9 @@
+networks:
+  backend:
+    name: "${DOCKER_BACKEND_NETWORK_NAME}"
+    driver: ${DOCKER_NETWORK_DRIVER}
+    ipam:
+      config:
+        - subnet: "${DOCKER_BACKEND_SUBNET}"
+          gateway: "${DOCKER_BACKEND_SUBNET_GATEWAY}"
+

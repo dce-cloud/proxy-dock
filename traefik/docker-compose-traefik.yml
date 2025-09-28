@@ -1,0 +1,24 @@
+volumes:
+  traefik:
+    driver: ${VOLUMES_DRIVER}
+
+services:
+
+### TRAEFIK ##############################################
+  traefik:
+    build:
+      context: ${TRAEFIK_HOST_PATH}
+      args:
+        - TRAEFIK_VERSION=${TRAEFIK_VERSION}
+    container_name: ${TRAEFIK_CONTAINER_NAME}
+    hostname: ${TRAEFIK_HOSTNAME}
+    volumes:
+      - "${DOCKER_SOCK_PATH_HOST}:/var/run/docker.sock"
+      - "${DATA_HOST_PATH}/${TRAEFIK_CONTAINER_NAME}:/data"
+    ports:
+      - "${TRAEFIK_HOST_HTTP_PORT}:${TRAEFIK_HOST_HTTP_PORT}"
+      - "${TRAEFIK_HOST_HTTPS_PORT}:${TRAEFIK_HOST_HTTPS_PORT}"
+      - "${TRAEFIK_DASHBOARD_PORT}:${TRAEFIK_DASHBOARD_PORT}"
+    networks:
+      backend:
+        ipv4_address: ${TRAEFIK_BACKEND_IP}
