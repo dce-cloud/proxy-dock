@@ -1,0 +1,37 @@
+#### Traefik Dashboard ####
+
+TraefikDashboardRouterAnchor: &TraefikDashboardRouterAnchor
+  rule: "Host(`gateway.zzdev.cn`) || Host(`traefik.zz.cn`)"
+  service: api@internal
+  middlewares:
+    - cors@file
+    - traefikDashboard
+
+#### Http ####
+
+http:
+  middlewares:
+    traefikDashboard:
+      basicAuth:
+        usersFile: /run/secrets/traefik_basicauth_users
+
+  routers:
+  
+    #### traefik dashboard ####
+    
+    TraefikDashboardHttp:
+      <<: *TraefikDashboardRouterAnchor
+      entryPoints:
+        - web
+      priority: 100
+    TraefikDashboardHttps:
+      <<: *TraefikDashboardRouterAnchor
+      entryPoints:
+        - websecure
+      priority: 100
+      tls:
+        domains:
+          - main: "gateway.zzdev.cn"
+            sans:
+              - "*.zzdev.cn"
+        

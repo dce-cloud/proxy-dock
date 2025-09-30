@@ -1,0 +1,39 @@
+http:
+  services:
+    whoami1Svc:
+      loadBalancer:
+        servers:
+          - url: "http://whoami1:80"
+    whoami2Svc:
+      loadBalancer:
+        servers:
+          - url: "http://whoami2:80"
+
+  middlewares:
+    whoami1Replacepathregex:
+      replacePathRegex:
+        regex: "^/api/english/(.*)"
+        replacement: "/api/${1}"
+    whoami2Replacepathregex:
+      replacePathRegex:
+        regex: "^/api/math/(.*)"
+        replacement: "/api/${1}"
+
+  routers:
+    whoami1:
+      entryPoints:
+        - web
+      rule: "Host(`zzdev.cn`) && PathPrefix(`/api/english/`)"
+      service: whoami1Svc
+      middlewares:
+        - whoami1Replacepathregex
+        
+    whoami2:
+      entryPoints:
+        - web
+      rule: "Host(`zzdev.cn`) && PathPrefix(`/api/math/`)"
+      service: whoami2Svc
+      middlewares:
+        - whoami2Replacepathregex
+
+  

@@ -1,0 +1,53 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/zzdev.cn/zzdev.cn.pem
+        keyFile: /certs/zzdev.cn/zzdev.cn.key
+        
+  certificates:
+    - certFile: /certs/zzdev.cn/zzdev.cn.pem
+      keyFile: /certs/zzdev.cn/zzdev.cn.key
+      stores:
+        - default
+
+RedirectHttpToHttpsRouterAnchor: &RedirectHttpToHttpsRouterAnchor
+  entryPoints:
+    - web
+  priority: 2000
+  middlewares:
+    - redirectToHttps
+  service: noop@internal
+        
+http:
+  middlewares:
+    cors:
+      headers:
+        accessControlAllowOriginListRegex: 
+          - "^https?://([a-zA-Z0-9-]+\\.)*zzdev\\.cn$"
+        accessControlAllowHeaders: "Dnt,Host,Pragma,Cache-Control,Network,X-Requested-With,User-Agent,Source,Devicesn,Accept,Platform,Referer,Accept-Encoding,Accept-Language,Cookie,Lcdp-Csrf-Token,Lcdp-Signature,X-CustomHeader,Keep-Alive,If-Modified-Since,Authorization,Content-Type,Token,Secret,Referrer-Policy"
+        accessControlAllowMethods: "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+        accessControlAllowCredentials: true
+        accessControlMaxAge: 1728000
+        browserXssFilter: true
+        addVaryHeader: true
+        contentTypeNosniff: false
+
+    hsts:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        forceSTSHeader: true
+        contentSecurityPolicy: "default-src 'self'"
+        referrerPolicy: "strict-origin-when-cross-origin"
+
+    redirectToHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+        port: "443"
+        
+  routers:
+    RedirectHttpToHttps3:
+      <<: *RedirectHttpToHttpsRouterAnchor
+      rule: "HostRegexp(`^(aaa)\\.zzdev\\.cn$`)"

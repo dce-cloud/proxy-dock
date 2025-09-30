@@ -1,9 +1,6 @@
-networks:
-  backend:
-    name: "${DOCKER_BACKEND_NETWORK_NAME}"
-    driver: ${DOCKER_NETWORK_DRIVER}
-    ipam:
-      config:
-        - subnet: "${DOCKER_BACKEND_SUBNET}"
-          gateway: "${DOCKER_BACKEND_SUBNET_GATEWAY}"
-
+include:
+  - ./docker-compose-network.yml
+  - ./nginx/docker-compose-nginx.yml
+  - ./apache/docker-compose-apache.yml
+  - ./traefik/docker-compose-traefik.yml
+  - ./caddy/docker-compose-caddy.yml
